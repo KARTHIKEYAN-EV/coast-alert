@@ -2,41 +2,71 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Definition of the design system. All colors, gradients, fonts, etc should be defined here. 
-All colors MUST be HSL.
-*/
+/* Aquasentra Ocean Hazard Design System - Maritime Emergency Management Theme */
 
 @layer base {
   :root {
-    --background: 0 0% 100%;
-    --foreground: 222.2 84% 4.9%;
+    /* Ocean-inspired color palette */
+    --background: 210 20% 98%;
+    --foreground: 210 40% 8%;
 
-    --card: 0 0% 100%;
-    --card-foreground: 222.2 84% 4.9%;
+    --card: 210 20% 100%;
+    --card-foreground: 210 40% 8%;
 
-    --popover: 0 0% 100%;
-    --popover-foreground: 222.2 84% 4.9%;
+    --popover: 210 20% 100%;
+    --popover-foreground: 210 40% 8%;
 
-    --primary: 222.2 47.4% 11.2%;
-    --primary-foreground: 210 40% 98%;
+    /* Deep Ocean Primary - Navy Blue */
+    --primary: 210 100% 12%;
+    --primary-foreground: 210 20% 98%;
 
-    --secondary: 210 40% 96.1%;
-    --secondary-foreground: 222.2 47.4% 11.2%;
+    /* Ocean Secondary - Professional Blue */
+    --secondary: 210 20% 96%;
+    --secondary-foreground: 210 40% 12%;
 
-    --muted: 210 40% 96.1%;
-    --muted-foreground: 215.4 16.3% 46.9%;
+    /* Muted Ocean Tones */
+    --muted: 210 15% 95%;
+    --muted-foreground: 210 10% 45%;
 
-    --accent: 210 40% 96.1%;
-    --accent-foreground: 222.2 47.4% 11.2%;
+    /* Teal Accent - Emergency Highlight */
+    --accent: 185 84% 39%;
+    --accent-foreground: 210 20% 98%;
 
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
+    /* Alert Colors */
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 210 20% 98%;
+    
+    --warning: 38 92% 50%;
+    --warning-foreground: 210 40% 8%;
+    
+    --success: 158 64% 52%;
+    --success-foreground: 210 20% 98%;
 
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
-    --ring: 222.2 84% 4.9%;
+    /* UI Elements */
+    --border: 210 20% 88%;
+    --input: 210 20% 96%;
+    --ring: 185 84% 39%;
 
-    --radius: 0.5rem;
+    --radius: 0.75rem;
+
+    /* Ocean Gradients */
+    --gradient-ocean: linear-gradient(135deg, hsl(210 100% 12%) 0%, hsl(185 84% 39%) 100%);
+    --gradient-wave: linear-gradient(90deg, hsl(185 84% 39%) 0%, hsl(210 100% 25%) 50%, hsl(185 84% 39%) 100%);
+    --gradient-surface: linear-gradient(180deg, hsl(210 20% 98%) 0%, hsl(210 15% 95%) 100%);
+    
+    /* Severity Colors */
+    --severity-low: 158 64% 52%;
+    --severity-medium: 38 92% 50%;
+    --severity-high: 14 91% 60%;
+    --severity-critical: 0 84% 60%;
+    
+    /* Emergency Glow Effects */
+    --glow-emergency: 0 0 20px hsl(0 84% 60% / 0.3);
+    --glow-accent: 0 0 20px hsl(185 84% 39% / 0.3);
+    
+    /* Animations */
+    --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    --animation-wave: wave 3s ease-in-out infinite;
 
     --sidebar-background: 0 0% 98%;
 
@@ -56,41 +86,39 @@ All colors MUST be HSL.
   }
 
   .dark {
-    --background: 222.2 84% 4.9%;
-    --foreground: 210 40% 98%;
+    /* Dark Ocean Theme */
+    --background: 210 50% 6%;
+    --foreground: 210 20% 98%;
 
-    --card: 222.2 84% 4.9%;
-    --card-foreground: 210 40% 98%;
+    --card: 210 45% 8%;
+    --card-foreground: 210 20% 98%;
 
-    --popover: 222.2 84% 4.9%;
-    --popover-foreground: 210 40% 98%;
+    --popover: 210 45% 8%;
+    --popover-foreground: 210 20% 98%;
 
-    --primary: 210 40% 98%;
-    --primary-foreground: 222.2 47.4% 11.2%;
+    --primary: 185 84% 55%;
+    --primary-foreground: 210 50% 6%;
 
-    --secondary: 217.2 32.6% 17.5%;
-    --secondary-foreground: 210 40% 98%;
+    --secondary: 210 30% 12%;
+    --secondary-foreground: 210 20% 98%;
 
-    --muted: 217.2 32.6% 17.5%;
-    --muted-foreground: 215 20.2% 65.1%;
+    --muted: 210 30% 12%;
+    --muted-foreground: 210 15% 65%;
 
-    --accent: 217.2 32.6% 17.5%;
-    --accent-foreground: 210 40% 98%;
+    --accent: 185 84% 55%;
+    --accent-foreground: 210 50% 6%;
 
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 210 40% 98%;
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 210 20% 98%;
 
-    --border: 217.2 32.6% 17.5%;
-    --input: 217.2 32.6% 17.5%;
-    --ring: 212.7 26.8% 83.9%;
-    --sidebar-background: 240 5.9% 10%;
-    --sidebar-foreground: 240 4.8% 95.9%;
-    --sidebar-primary: 224.3 76.3% 48%;
-    --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 240 3.7% 15.9%;
-    --sidebar-accent-foreground: 240 4.8% 95.9%;
-    --sidebar-border: 240 3.7% 15.9%;
-    --sidebar-ring: 217.2 91.2% 59.8%;
+    --border: 210 30% 18%;
+    --input: 210 30% 12%;
+    --ring: 185 84% 55%;
+    
+    /* Dark Gradients */
+    --gradient-ocean: linear-gradient(135deg, hsl(210 50% 6%) 0%, hsl(185 84% 25%) 100%);
+    --gradient-wave: linear-gradient(90deg, hsl(185 84% 25%) 0%, hsl(210 50% 15%) 50%, hsl(185 84% 25%) 100%);
+    --gradient-surface: linear-gradient(180deg, hsl(210 50% 6%) 0%, hsl(210 45% 8%) 100%);
   }
 }
 
@@ -100,6 +128,63 @@ All colors MUST be HSL.
   }
 
   body {
-    @apply bg-background text-foreground;
+    @apply bg-background text-foreground font-sans;
+  }
+}
+
+@layer components {
+  /* Wave Animation */
+  @keyframes wave {
+    0%, 100% { transform: translateX(0) rotate(0deg); }
+    25% { transform: translateX(-10px) rotate(-2deg); }
+    75% { transform: translateX(10px) rotate(2deg); }
+  }
+  
+  .animate-wave {
+    animation: var(--animation-wave);
+  }
+  
+  /* Emergency Pulse Animation */
+  @keyframes emergency-pulse {
+    0%, 100% { opacity: 1; box-shadow: 0 0 0 0 hsl(var(--destructive) / 0.4); }
+    50% { opacity: 0.8; box-shadow: var(--glow-emergency); }
+  }
+  
+  .animate-emergency-pulse {
+    animation: emergency-pulse 2s ease-in-out infinite;
+  }
+  
+  /* Gradient Backgrounds */
+  .bg-gradient-ocean {
+    background: var(--gradient-ocean);
+  }
+  
+  .bg-gradient-wave {
+    background: var(--gradient-wave);
+  }
+  
+  .bg-gradient-surface {
+    background: var(--gradient-surface);
+  }
+  
+  /* Severity Indicators */
+  .severity-low {
+    color: hsl(var(--severity-low));
+    border-color: hsl(var(--severity-low));
+  }
+  
+  .severity-medium {
+    color: hsl(var(--severity-medium));
+    border-color: hsl(var(--severity-medium));
+  }
+  
+  .severity-high {
+    color: hsl(var(--severity-high));
+    border-color: hsl(var(--severity-high));
+  }
+  
+  .severity-critical {
+    color: hsl(var(--severity-critical));
+    border-color: hsl(var(--severity-critical));
   }
 }
