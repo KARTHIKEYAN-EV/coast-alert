@@ -5,15 +5,17 @@ import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Eye, EyeOff, Waves } from "lucide-react";
 
 interface LoginProps {
-  onLogin?: () => void;
+  onLogin?: (role?: 'citizen' | 'verifier' | 'analyst') => void;
 }
 
 export const Login = ({ onLogin }: LoginProps) => {
   const [showPassword, setShowPassword] = useState(false);
   const [activeTab, setActiveTab] = useState("login");
+  const [selectedRole, setSelectedRole] = useState<'citizen' | 'verifier' | 'analyst'>('citizen');
 
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
@@ -97,7 +99,10 @@ export const Login = ({ onLogin }: LoginProps) => {
                     variant="ocean"
                     onClick={(e) => {
                       e.preventDefault();
-                      onLogin?.();
+                      // Demo: cycle through different roles for testing
+                      const roles: ('citizen' | 'verifier' | 'analyst')[] = ['citizen', 'verifier', 'analyst'];
+                      const randomRole = roles[Math.floor(Math.random() * roles.length)];
+                      onLogin?.(randomRole);
                     }}
                   >
                     Sign In
@@ -168,21 +173,43 @@ export const Login = ({ onLogin }: LoginProps) => {
                   </div>
                   
                   <div className="space-y-2">
-                    <Label>Account Type</Label>
-                    <div className="flex gap-2">
-                      <Badge variant="secondary" className="cursor-pointer hover:bg-accent">
-                        Citizen Reporter
-                      </Badge>
-                      <Badge variant="outline" className="cursor-pointer hover:bg-accent">
-                        Organization
-                      </Badge>
-                    </div>
-                    <p className="text-xs text-muted-foreground">
-                      Choose "Citizen Reporter" for individual reporting. Organization accounts require approval.
-                    </p>
+                    <Label htmlFor="role">Account Type</Label>
+                    <Select value={selectedRole} onValueChange={(value: 'citizen' | 'verifier' | 'analyst') => setSelectedRole(value)}>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select your role" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="citizen">
+                          <div className="flex flex-col">
+                            <span>Citizen Reporter</span>
+                            <span className="text-xs text-muted-foreground">Submit and view reports</span>
+                          </div>
+                        </SelectItem>
+                        <SelectItem value="verifier">
+                          <div className="flex flex-col">
+                            <span>Report Verifier</span>
+                            <span className="text-xs text-muted-foreground">Verify and moderate reports</span>
+                          </div>
+                        </SelectItem>
+                        <SelectItem value="analyst">
+                          <div className="flex flex-col">
+                            <span>Analyst/Official</span>
+                            <span className="text-xs text-muted-foreground">Full admin access and analytics</span>
+                          </div>
+                        </SelectItem>
+                      </SelectContent>
+                    </Select>
                   </div>
                   
-                  <Button type="submit" className="w-full" variant="ocean">
+                  <Button 
+                    type="submit" 
+                    className="w-full" 
+                    variant="ocean"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      onLogin?.(selectedRole);
+                    }}
+                  >
                     Create Account
                   </Button>
                 </form>

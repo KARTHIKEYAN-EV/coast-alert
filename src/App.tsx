@@ -19,21 +19,40 @@ import NotFound from "./pages/NotFound";
 const queryClient = new QueryClient();
 
 // Mock user data - will be replaced with real authentication
-const mockUser = {
-  firstName: "John",
-  lastName: "Doe", 
-  role: "citizen" as const
+const mockUsers = {
+  citizen: {
+    firstName: "John",
+    lastName: "Doe", 
+    role: "citizen" as const
+  },
+  verifier: {
+    firstName: "Jane",
+    lastName: "Smith", 
+    role: "verifier" as const
+  },
+  analyst: {
+    firstName: "Mike",
+    lastName: "Johnson", 
+    role: "analyst" as const
+  }
 };
 
 const App = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false); // Start with false to show login
+  const [currentUser, setCurrentUser] = useState<{
+    firstName: string;
+    lastName: string;
+    role: 'citizen' | 'verifier' | 'analyst';
+  } | null>(null);
   
-  const handleLogin = () => {
+  const handleLogin = (role: 'citizen' | 'verifier' | 'analyst' = 'citizen') => {
+    setCurrentUser(mockUsers[role]);
     setIsAuthenticated(true);
   };
   
   const handleLogout = () => {
     setIsAuthenticated(false);
+    setCurrentUser(null);
   };
 
   return (
@@ -47,16 +66,44 @@ const App = () => {
               <Route path="*" element={<Login onLogin={handleLogin} />} />
             </Routes>
           ) : (
-            <Layout user={mockUser} pendingReports={8} onLogout={handleLogout}>
+            <Layout user={currentUser!} pendingReports={8} onLogout={handleLogout}>
               <Routes>
                 <Route path="/" element={<Dashboard />} />
                 <Route path="/map" element={<MapView />} />
                 <Route path="/report" element={<ReportSubmission />} />
                 <Route path="/settings" element={<Settings />} />
-                <Route path="/review" element={<ReviewQueue />} />
-                <Route path="/verified" element={<VerifiedReports />} />
-                <Route path="/analytics" element={<Analytics />} />
-                <Route path="/users" element={<UserManagement />} />
+                <Route path="/review" element={
+                  currentUser?.role === 'verifier' || currentUser?.role === 'analyst' ? 
+                  <ReviewQueue /> : 
+                  <div className="p-8 text-center">
+                    <h2 className="text-2xl font-bold text-muted-foreground">Access Denied</h2>
+                    <p className="mt-2 text-muted-foreground">This page is only available to Verifiers and Analysts.</p>
+                  </div>
+                } />
+                <Route path="/verified" element={
+                  currentUser?.role === 'verifier' || currentUser?.role === 'analyst' ? 
+                  <VerifiedReports /> : 
+                  <div className="p-8 text-center">
+                    <h2 className="text-2xl font-bold text-muted-foreground">Access Denied</h2>
+                    <p className="mt-2 text-muted-foreground">This page is only available to Verifiers and Analysts.</p>
+                  </div>
+                } />
+                <Route path="/analytics" element={
+                  currentUser?.role === 'analyst' ? 
+                  <Analytics /> : 
+                  <div className="p-8 text-center">
+                    <h2 className="text-2xl font-bold text-muted-foreground">Access Denied</h2>
+                    <p className="mt-2 text-muted-foreground">This page is only available to Analysts.</p>
+                  </div>
+                } />
+                <Route path="/users" element={
+                  currentUser?.role === 'analyst' ? 
+                  <UserManagement /> : 
+                  <div className="p-8 text-center">
+                    <h2 className="text-2xl font-bold text-muted-foreground">Access Denied</h2>
+                    <p className="mt-2 text-muted-foreground">This page is only available to Analysts.</p>
+                  </div>
+                } />
                 {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
                 <Route path="*" element={<NotFound />} />
               </Routes>

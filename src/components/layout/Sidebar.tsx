@@ -48,7 +48,7 @@ export const Sidebar = ({ userRole, pendingReports = 0, isCollapsed = false }: S
         title: "Submit Report", 
         href: "/report", 
         icon: PlusCircle,
-        roles: ['citizen']
+        roles: ['citizen', 'verifier', 'analyst']
       },
     ];
 
