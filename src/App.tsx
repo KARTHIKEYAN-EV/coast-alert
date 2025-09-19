@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -25,9 +26,15 @@ const mockUser = {
 };
 
 const App = () => {
-  // For demo purposes, we'll show the login page first
-  // In production, this would check authentication state
-  const isAuthenticated = true; // Change to false to see login page
+  const [isAuthenticated, setIsAuthenticated] = useState(false); // Start with false to show login
+  
+  const handleLogin = () => {
+    setIsAuthenticated(true);
+  };
+  
+  const handleLogout = () => {
+    setIsAuthenticated(false);
+  };
 
   return (
     <QueryClientProvider client={queryClient}>
@@ -37,10 +44,10 @@ const App = () => {
         <BrowserRouter>
           {!isAuthenticated ? (
             <Routes>
-              <Route path="*" element={<Login />} />
+              <Route path="*" element={<Login onLogin={handleLogin} />} />
             </Routes>
           ) : (
-            <Layout user={mockUser} pendingReports={8}>
+            <Layout user={mockUser} pendingReports={8} onLogout={handleLogout}>
               <Routes>
                 <Route path="/" element={<Dashboard />} />
                 <Route path="/map" element={<MapView />} />

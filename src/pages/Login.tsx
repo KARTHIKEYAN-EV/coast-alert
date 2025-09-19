@@ -7,7 +7,11 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
 import { Eye, EyeOff, Waves } from "lucide-react";
 
-export const Login = () => {
+interface LoginProps {
+  onLogin?: () => void;
+}
+
+export const Login = ({ onLogin }: LoginProps) => {
   const [showPassword, setShowPassword] = useState(false);
   const [activeTab, setActiveTab] = useState("login");
 
@@ -87,7 +91,15 @@ export const Login = () => {
                     </div>
                   </div>
                   
-                  <Button type="submit" className="w-full" variant="ocean">
+                  <Button 
+                    type="submit" 
+                    className="w-full" 
+                    variant="ocean"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      onLogin?.();
+                    }}
+                  >
                     Sign In
                   </Button>
                 </form>

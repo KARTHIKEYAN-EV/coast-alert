@@ -10,9 +10,10 @@ interface LayoutProps {
     role: 'citizen' | 'verifier' | 'analyst';
   };
   pendingReports?: number;
+  onLogout?: () => void;
 }
 
-export const Layout = ({ children, user, pendingReports = 0 }: LayoutProps) => {
+export const Layout = ({ children, user, pendingReports = 0, onLogout }: LayoutProps) => {
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
 
   return (
@@ -30,6 +31,7 @@ export const Layout = ({ children, user, pendingReports = 0 }: LayoutProps) => {
           user={user}
           pendingReports={pendingReports}
           onMenuClick={() => setSidebarCollapsed(!sidebarCollapsed)}
+          onLogout={onLogout}
         />
         
         <main className="flex-1 overflow-auto">

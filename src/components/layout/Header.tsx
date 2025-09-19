@@ -18,9 +18,10 @@ interface HeaderProps {
   };
   onMenuClick?: () => void;
   pendingReports?: number;
+  onLogout?: () => void;
 }
 
-export const Header = ({ user, onMenuClick, pendingReports = 0 }: HeaderProps) => {
+export const Header = ({ user, onMenuClick, pendingReports = 0, onLogout }: HeaderProps) => {
   return (
     <header className="h-16 border-b bg-card shadow-sm">
       <div className="flex h-full items-center justify-between px-4">
@@ -87,12 +88,17 @@ export const Header = ({ user, onMenuClick, pendingReports = 0 }: HeaderProps) =
             <DropdownMenuContent align="end" className="w-56">
               <DropdownMenuLabel>My Account</DropdownMenuLabel>
               <DropdownMenuSeparator />
-              <DropdownMenuItem>
-                <Settings className="mr-2 h-4 w-4" />
-                Settings
+              <DropdownMenuItem asChild>
+                <a href="/settings" className="flex items-center">
+                  <Settings className="mr-2 h-4 w-4" />
+                  Settings
+                </a>
               </DropdownMenuItem>
               <DropdownMenuSeparator />
-              <DropdownMenuItem className="text-destructive">
+              <DropdownMenuItem 
+                className="text-destructive cursor-pointer"
+                onClick={onLogout}
+              >
                 <LogOut className="mr-2 h-4 w-4" />
                 Log out
               </DropdownMenuItem>
