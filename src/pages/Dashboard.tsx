@@ -1,8 +1,22 @@
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { AlertTriangle, CheckCircle, MapPin, TrendingUp, PlusCircle, Clock } from "lucide-react";
+import {
+  AlertTriangle,
+  CheckCircle,
+  MapPin,
+  TrendingUp,
+  PlusCircle,
+  Clock,
+} from "lucide-react";
 import heroImage from "@/assets/ocean-hero.jpg";
+import { useNavigate } from "react-router-dom";
 
 // Mock data - will be replaced with real data from Supabase
 const mockDashboardData = {
@@ -17,50 +31,60 @@ const mockDashboardData = {
       location: "Santa Monica Beach",
       severity: "high",
       createdAt: new Date(Date.now() - 30 * 60 * 1000), // 30 minutes ago
-      status: "pending"
+      status: "pending",
     },
     {
-      id: "2", 
+      id: "2",
       hazardType: "coastal-erosion",
       location: "Malibu Coast",
       severity: "medium",
       createdAt: new Date(Date.now() - 2 * 60 * 60 * 1000), // 2 hours ago
-      status: "verified"
+      status: "verified",
     },
     {
       id: "3",
-      hazardType: "storm-surge", 
+      hazardType: "storm-surge",
       location: "Long Beach Harbor",
       severity: "critical",
       createdAt: new Date(Date.now() - 4 * 60 * 60 * 1000), // 4 hours ago
-      status: "verified"
-    }
-  ]
+      status: "verified",
+    },
+  ],
 };
 
 const getSeverityColor = (severity: string) => {
   switch (severity) {
-    case 'low': return 'text-success border-success';
-    case 'medium': return 'text-warning border-warning';
-    case 'high': return 'text-severity-high border-severity-high';
-    case 'critical': return 'text-severity-critical border-severity-critical';
-    default: return 'text-muted-foreground border-border';
+    case "low":
+      return "text-success border-success";
+    case "medium":
+      return "text-warning border-warning";
+    case "high":
+      return "text-severity-high border-severity-high";
+    case "critical":
+      return "text-severity-critical border-severity-critical";
+    default:
+      return "text-muted-foreground border-border";
   }
 };
 
 const getStatusColor = (status: string) => {
   switch (status) {
-    case 'verified': return 'bg-success text-success-foreground';
-    case 'pending': return 'bg-warning text-warning-foreground';
-    case 'rejected': return 'bg-destructive text-destructive-foreground';
-    default: return 'bg-muted text-muted-foreground';
+    case "verified":
+      return "bg-success text-success-foreground";
+    case "pending":
+      return "bg-warning text-warning-foreground";
+    case "rejected":
+      return "bg-destructive text-destructive-foreground";
+    default:
+      return "bg-muted text-muted-foreground";
   }
 };
 
-const formatHazardType = (type: string) => {
-  return type.split('-').map(word => 
-    word.charAt(0).toUpperCase() + word.slice(1)
-  ).join(' ');
+const formatHazardType = (hazardType: string) => {
+  return hazardType
+    .split("-")
+    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+    .join(" ");
 };
 
 const formatTimeAgo = (date: Date) => {
@@ -68,7 +92,7 @@ const formatTimeAgo = (date: Date) => {
   const diff = now.getTime() - date.getTime();
   const minutes = Math.floor(diff / (1000 * 60));
   const hours = Math.floor(diff / (1000 * 60 * 60));
-  
+
   if (minutes < 60) {
     return `${minutes}m ago`;
   } else {
@@ -77,13 +101,14 @@ const formatTimeAgo = (date: Date) => {
 };
 
 export const Dashboard = () => {
+  const navigate = useNavigate();
   return (
     <div className="p-6 space-y-6">
       {/* Hero Section */}
       <div className="relative rounded-2xl overflow-hidden">
-        <img 
-          src={heroImage} 
-          alt="Ocean hazard monitoring dashboard" 
+        <img
+          src={heroImage}
+          alt="Ocean hazard monitoring dashboard"
           className="w-full h-64 object-cover"
         />
         <div className="absolute inset-0 bg-gradient-ocean opacity-80" />
@@ -94,11 +119,21 @@ export const Dashboard = () => {
               Real-time crowdsourced hazard reporting for coastal safety
             </p>
             <div className="flex gap-4 justify-center">
-              <Button variant="default" size="lg" className="bg-white text-primary hover:bg-white/90">
+              <Button
+                variant="outline"
+                size="lg"
+                className="border-white bg-white text-primary hover:bg-white/20 hover:text-white"
+                onClick={() => navigate("/report")}
+              >
                 <PlusCircle className="mr-2 h-5 w-5" />
                 Submit Report
               </Button>
-              <Button variant="outline" size="lg" className="border-white text-white hover:bg-white/10">
+              <Button
+                variant="outline"
+                size="lg"
+                className="border-white text-primary hover:bg-white/20 hover:text-white"
+                onClick={() => navigate("/map")}
+              >
                 <MapPin className="mr-2 h-5 w-5" />
                 View Map
               </Button>
@@ -115,7 +150,9 @@ export const Dashboard = () => {
             <TrendingUp className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{mockDashboardData.totalReports}</div>
+            <div className="text-2xl font-bold">
+              {mockDashboardData.totalReports}
+            </div>
             <p className="text-xs text-muted-foreground">
               +12% from last month
             </p>
@@ -124,11 +161,15 @@ export const Dashboard = () => {
 
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Pending Review</CardTitle>
+            <CardTitle className="text-sm font-medium">
+              Pending Review
+            </CardTitle>
             <Clock className="h-4 w-4 text-warning" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-warning">{mockDashboardData.pendingReports}</div>
+            <div className="text-2xl font-bold text-warning">
+              {mockDashboardData.pendingReports}
+            </div>
             <p className="text-xs text-muted-foreground">
               Requires verification
             </p>
@@ -137,24 +178,30 @@ export const Dashboard = () => {
 
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Verified Reports</CardTitle>
+            <CardTitle className="text-sm font-medium">
+              Verified Reports
+            </CardTitle>
             <CheckCircle className="h-4 w-4 text-success" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-success">{mockDashboardData.verifiedReports}</div>
-            <p className="text-xs text-muted-foreground">
-              Confirmed incidents
-            </p>
+            <div className="text-2xl font-bold text-success">
+              {mockDashboardData.verifiedReports}
+            </div>
+            <p className="text-xs text-muted-foreground">Confirmed incidents</p>
           </CardContent>
         </Card>
 
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Critical Alerts</CardTitle>
+            <CardTitle className="text-sm font-medium">
+              Critical Alerts
+            </CardTitle>
             <AlertTriangle className="h-4 w-4 text-destructive" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-destructive">{mockDashboardData.criticalReports}</div>
+            <div className="text-2xl font-bold text-destructive">
+              {mockDashboardData.criticalReports}
+            </div>
             <p className="text-xs text-muted-foreground">
               Immediate attention required
             </p>
@@ -173,21 +220,27 @@ export const Dashboard = () => {
         <CardContent>
           <div className="space-y-4">
             {mockDashboardData.recentReports.map((report) => (
-              <div 
-                key={report.id} 
+              <div
+                key={report.id}
                 className="flex items-center justify-between p-4 border rounded-lg hover:bg-muted/50 transition-colors"
               >
                 <div className="flex items-center gap-4">
-                  <div className={`w-3 h-3 rounded-full border-2 ${getSeverityColor(report.severity)}`} />
+                  <div
+                    className={`w-3 h-3 rounded-full border-2 ${getSeverityColor(
+                      report.severity
+                    )}`}
+                  />
                   <div>
-                    <p className="font-medium">{formatHazardType(report.hazardType)}</p>
+                    <p className="font-medium">
+                      {formatHazardType(report.hazardType)}
+                    </p>
                     <p className="text-sm text-muted-foreground flex items-center gap-1">
                       <MapPin className="h-3 w-3" />
                       {report.location}
                     </p>
                   </div>
                 </div>
-                
+
                 <div className="flex items-center gap-3">
                   <span className="text-sm text-muted-foreground">
                     {formatTimeAgo(report.createdAt)}
