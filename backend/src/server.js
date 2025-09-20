@@ -1,75 +1,72 @@
-const express = require('express');
-const cors = require('cors');
-const helmet = require('helmet');
-const rateLimit = require('express-rate-limit');
-const compression = require('compression');
-const morgan = require('morgan');
-require('dotenv').config();
+require("dotenv").config();
+const express = require("express");
+const cors = require("cors");
+const helmet = require("helmet");
+const rateLimit = require("express-rate-limit");
+const compression = require("compression");
+const morgan = require("morgan");
+const connectDB = require("./config/database"); // MongoDB connection
+const logger = require("../utils/logger");
+const errorHandler = require("../middleware/errorHandler"); // Correct path
 
-const { connectDB } = require('./src/config/database');
-const authRoutes = require('./src/routes/auth');
-const reportRoutes = require('./src/routes/reports');
-const userRoutes = require('./src/routes/users');
-const analyticsRoutes = require('./src/routes/analytics');
-const mapRoutes = require('./src/routes/map');
-const errorHandler = require('./src/middleware/errorHandler');
-const logger = require('./src/utils/logger');
+// Routes
+const authRoutes = require("../routes/auth");
+const reportRoutes = require("../routes/reports");
+const userRoutes = require("../routes/users");
+const analyticsRoutes = require("../routes/analytics");
+const mapRoutes = require("../routes/map");
 
 const app = express();
 const PORT = process.env.PORT || 5000;
 
-// Security middleware
+// Security
 app.use(helmet());
 app.use(cors({
-  origin: process.env.FRONTEND_URL || 'http://localhost:3000',
+  origin: process.env.FRONTEND_URL || "http://localhost:3000",
   credentials: true
 }));
 
-// Rate limiting
-const limiter = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 100, // limit each IP to 100 requests per windowMs
-  message: 'Too many requests from this IP, please try again later.'
-});
-app.use(limiter);
+// Rate limiter
+app.use(rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 mins
+  max: 100,
+  message: "Too many requests from this IP, please try again later."
+}));
 
-// Body parsing middleware
-app.use(express.json({ limit: '10mb' }));
-app.use(express.urlencoded({ extended: true, limit: '10mb' }));
+// Parsers
+app.use(express.json({ limit: "10mb" }));
+app.use(express.urlencoded({ extended: true, limit: "10mb" }));
 
-// Compression and logging
+// Compression & logging
 app.use(compression());
-app.use(morgan('combined', { stream: { write: message => logger.info(message.trim()) } }));
+app.use(morgan("combined", { stream: { write: msg => logger.info(msg.trim()) } }));
 
-// Static files for uploads
-app.use('/uploads', express.static('uploads'));
+// Static uploads
+app.use("/uploads", express.static("uploads"));
 
-// API Routes
-app.use('/api/auth', authRoutes);
-app.use('/api/reports', reportRoutes);
-app.use('/api/users', userRoutes);
-app.use('/api/analytics', analyticsRoutes);
-app.use('/api/map', mapRoutes);
+// API routes
+app.use("/api/auth", authRoutes);
+app.use("/api/reports", reportRoutes);
+app.use("/api/users", userRoutes);
+app.use("/api/analytics", analyticsRoutes);
+app.use("/api/map", mapRoutes);
 
-// Health check endpoint
-app.get('/api/health', (req, res) => {
+// Health check
+app.get("/api/health", (req, res) => {
   res.status(200).json({
-    status: 'OK',
-    timestamp: new Date().toISOString(),
-    uptime: process.uptime(),
-    memory: process.memoryUsage(),
-    version: process.env.npm_package_version || '1.0.0'
+    status: "OK",
+    timestamp: new Date().toISOString()
   });
 });
 
-// Error handling middleware (must be last)
+// Error handler (must be after all routes)
 app.use(errorHandler);
 
-// 404 handler
-app.use('*', (req, res) => {
-  res.status(404).json({ 
-    success: false, 
-    message: 'Route not found',
+// 404
+app.use("*", (req, res) => {
+  res.status(404).json({
+    success: false,
+    message: "Route not found",
     path: req.originalUrl
   });
 });
@@ -77,42 +74,16 @@ app.use('*', (req, res) => {
 // Start server
 const startServer = async () => {
   try {
-    // Connect to database
-    await connectDB();
-    logger.info('Database connected successfully');
+    await connectDB(); // Connect to MongoDB
+    logger.info("✅ Database connected");
 
-    // Start listening
     app.listen(PORT, () => {
-      logger.info(`🌊 Aquasentra Backend Server running on port ${PORT}`);
-      logger.info(`Environment: ${process.env.NODE_ENV}`);
-      logger.info(`Frontend URL: ${process.env.FRONTEND_URL || 'http://localhost:3000'}`);
+      logger.info(`🌊 Aquasentra Backend running on port ${PORT}`);
     });
-  } catch (error) {
-    logger.error('Failed to start server:', error);
+  } catch (err) {
+    logger.error("❌ Failed to start server:", err);
     process.exit(1);
   }
 };
-
-// Graceful shutdown
-process.on('SIGTERM', () => {
-  logger.info('SIGTERM received, shutting down gracefully');
-  process.exit(0);
-});
-
-process.on('SIGINT', () => {
-  logger.info('SIGINT received, shutting down gracefully');
-  process.exit(0);
-});
-
-// Handle uncaught exceptions
-process.on('uncaughtException', (error) => {
-  logger.error('Uncaught Exception:', error);
-  process.exit(1);
-});
-
-process.on('unhandledRejection', (reason, promise) => {
-  logger.error('Unhandled Rejection at:', promise, 'reason:', reason);
-  process.exit(1);
-});
 
 startServer();
