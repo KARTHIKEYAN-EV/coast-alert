@@ -21,7 +21,12 @@ interface HeaderProps {
   onLogout?: () => void;
 }
 
-export const Header = ({ user, onMenuClick, pendingReports = 0, onLogout }: HeaderProps) => {
+export const Header = ({
+  user,
+  onMenuClick,
+  pendingReports = 0,
+  onLogout,
+}: HeaderProps) => {
   return (
     <header className="h-16 border-b bg-card shadow-sm">
       <div className="flex h-full items-center justify-between px-4">
@@ -35,7 +40,7 @@ export const Header = ({ user, onMenuClick, pendingReports = 0, onLogout }: Head
           >
             <Menu className="h-5 w-5" />
           </Button>
-          
+
           <div className="flex items-center gap-2">
             <div className="h-8 w-8 rounded-full bg-gradient-ocean flex items-center justify-center">
               <span className="text-white font-bold text-sm">A</span>
@@ -57,11 +62,11 @@ export const Header = ({ user, onMenuClick, pendingReports = 0, onLogout }: Head
           <Button variant="ghost" size="icon" className="relative">
             <Bell className="h-5 w-5" />
             {pendingReports > 0 && (
-              <Badge 
-                variant="destructive" 
+              <Badge
+                variant="destructive"
                 className="absolute -top-1 -right-1 h-5 w-5 rounded-full p-0 flex items-center justify-center text-xs"
               >
-                {pendingReports > 99 ? '99+' : pendingReports}
+                {pendingReports > 99 ? "99+" : pendingReports}
               </Badge>
             )}
           </Button>
@@ -69,7 +74,10 @@ export const Header = ({ user, onMenuClick, pendingReports = 0, onLogout }: Head
           {/* User Menu */}
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="ghost" className="flex items-center gap-2">
+              <Button
+                variant="ghost"
+                className="flex items-center gap-2 hover:text-gray-100"
+              >
                 <div className="h-8 w-8 rounded-full bg-secondary flex items-center justify-center">
                   <User className="h-4 w-4" />
                 </div>
@@ -95,7 +103,7 @@ export const Header = ({ user, onMenuClick, pendingReports = 0, onLogout }: Head
                 </a>
               </DropdownMenuItem>
               <DropdownMenuSeparator />
-              <DropdownMenuItem 
+              <DropdownMenuItem
                 className="text-destructive cursor-pointer"
                 onClick={onLogout}
               >
