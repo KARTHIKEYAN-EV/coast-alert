@@ -3,75 +3,56 @@ const logger = require('./logger');
 
 let transporter;
 
-/**
- * Initializes the Nodemailer transporter safely.
- */
-const initializeTransporter = () => {
-  // Check if email credentials are provided in the .env file
-  if (!process.env.EMAIL_SERVICE || !process.env.EMAIL_USER || !process.env.EMAIL_PASSWORD) {
-    // This warning is now handled correctly and will not crash the app.
-    logger.warn('Email service not configured. Email notifications will be disabled.');
-    return;
-  }
-
+// Initialize transporter with Ethereal
+const initializeTransporter = async () => {
   try {
-    // FIXED: Use createTransport (not createTransporter)
+    // Create a test account on Ethereal
+    const testAccount = await nodemailer.createTestAccount();
+
     transporter = nodemailer.createTransport({
-      service: process.env.EMAIL_SERVICE,
+      host: 'smtp.ethereal.email',
+      port: 587,
       auth: {
-        user: process.env.EMAIL_USER,
-        pass: process.env.EMAIL_PASSWORD,
+        user: testAccount.user,
+        pass: testAccount.pass,
       },
     });
 
-    // Verify the connection in the background - WRAPPED IN TRY-CATCH
-    transporter.verify((error) => {
-      if (error) {
-        logger.error('Email service connection failed. Emails will not be sent.', error);
-        transporter = null; // Disable the transporter if verification fails
-      } else {
-        logger.info('Email service connected and ready.');
-      }
-    });
+    logger.info('✅ Ethereal email service connected. Test emails will work.');
+    logger.info(`Ethereal account user: ${testAccount.user}`);
+    logger.info(`Ethereal account pass: ${testAccount.pass}`);
   } catch (error) {
-    logger.error('Failed to create email transporter:', error);
+    logger.error('❌ Failed to initialize Ethereal email service:', error);
     transporter = null;
   }
 };
 
-// Call the initialization function once when the app starts
-try {
-  initializeTransporter();
-} catch (error) {
-  logger.error('Email service initialization failed:', error);
-  // Don't let email service failure crash the entire app
-}
+// Call once at startup
+initializeTransporter();
 
 /**
- * Sends a welcome email to a new user.
+ * Send a test email
  */
 const sendWelcomeEmail = async (email, firstName) => {
-  // Check if the transporter is available before trying to send an email
   if (!transporter) {
-    logger.warn(`Skipping welcome email to ${email} because email service is not available.`);
+    logger.warn(`⚠️ Email service not available. Skipping email to ${email}`);
     return;
   }
 
   const mailOptions = {
-    from: `Aquasentra <${process.env.EMAIL_USER}>`,
+    from: `"Aquasentra Dev" <no-reply@aquasentra.com>`,
     to: email,
     subject: 'Welcome to Aquasentra!',
-    html: `<h1>Welcome, ${firstName}!</h1><p>Thank you for joining the Aquasentra platform.</p>`,
+    html: `<h1>Hello, ${firstName}!</h1><p>Welcome to the Aquasentra platform.</p>`,
   };
 
   try {
-    await transporter.sendMail(mailOptions);
-    logger.info(`Welcome email sent to ${email}`);
-  } catch (error) {
-    logger.error(`Failed to send welcome email to ${email}:`, error);
+    const info = await transporter.sendMail(mailOptions);
+    logger.info(`📧 Test email sent: ${info.messageId}`);
+    logger.info(`Preview URL: ${nodemailer.getTestMessageUrl(info)}`);
+  } catch (err) {
+    logger.error(`❌ Failed to send email to ${email}:`, err);
   }
 };
 
-module.exports = {
-  sendWelcomeEmail,
-};
+module.exports = { sendWelcomeEmail };
