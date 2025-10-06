@@ -1,3 +1,6 @@
+# Aquasentra_Ocean_Hazard
+Aquasentra_Ocean_Hazard: A unified web + mobile platform for crowdsourced ocean-hazard reporting and real-time social media analytics. Citizens can upload geotagged hazard reports (text, photo, video), while responders view live hotspots and dashboard insights for faster decision-making. 🌊📡🗺️
+
 # Welcome to our project
 
 ## How can I edit this code?
